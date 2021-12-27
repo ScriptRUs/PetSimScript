@@ -337,7 +337,28 @@ for i,v in pairs(CurrencyOrder) do
 		end
 	end
 end
+local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
+local IDToName = {}
+local NameToID = {}
+for i,v in pairs(Library.Directory.Pets ) do
+    IDToName[i] = v.name
+    NameToID[v.name] = i
+end
 
+function GetPets()
+    local MyPets = {}
+    for i,v in pairs(Library.Save.Get().Pets) do
+        local ThingyThingyTempTypeThing = (v.g and 'Gold') or (v.r and 'Rainbow') or (v.dm and 'Dark Matter') or 'Normal'
+        local TempString = ThingyThingyTempTypeThing .. IDToName[v.id]
+        if MyPets[TempString] then
+            table.insert(MyPets[TempString], v.uid)
+        else
+            MyPets[TempString] = {}
+            table.insert(MyPets[TempString], v.uid)
+        end
+    end
+    return MyPets
+end
 spawn(function()
 	while true do wait()
 		if StartCombine then
