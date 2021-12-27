@@ -1,3 +1,4 @@
+
     local start = tick()
     repeat task.wait() until game:isLoaded()
     repeat task.wait() until game:GetService("Players")
@@ -482,26 +483,7 @@ FunWindow:Button("Visual Dupe Gems", function()
 	local newString = tostring(new)
 	diamonds.Text = newString
 end)
-FunWindow:Button("Visual Dupe Candy", function()
-	function comma_value(amount)
-	  local formatted = amount
-	  while true do  
-		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-		if (k == 0) then
-		  break
-		end
-	  end
-	  return formatted
-	end
 
-	local Candy = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right["Halloween Candy"].Amount
-	local old = Candy.Text
-	local oldNumber = string.gsub(old, ",", "")
-	local newNumber = oldNumber * 2
-	local new = comma_value(newNumber)
-	local newString = tostring(new)
-	Candy.Text = newString
-end)
 FunWindow:Button("Visual Dupe Tech Coins", function()
 	function comma_value(amount)
 	  local formatted = amount
