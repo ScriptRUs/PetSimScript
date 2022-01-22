@@ -18,7 +18,7 @@ local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("F
 local Network = GameLibrary.Network
 local Run_Service = game:GetService("RunService")
 local rs = Run_Service.RenderStepped
-local CurrencyOrder = {"Gingerbread","Tech Coins", "Fantasy Coins", "Coins", "Diamonds",}
+local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins", "Diamonds",}
 
     local IMightKillMyselfCauseOfThis = {
         --Misc
@@ -28,7 +28,7 @@ local CurrencyOrder = {"Gingerbread","Tech Coins", "Fantasy Coins", "Coins", "Di
         -- Fantasy init
         ['Enchanted Forest'] = {'Enchanted Forest', 'Enchanted Forest FRONT'}; ['Ancient'] = {'Ancient'}; ['Samurai'] = {'Samurai', 'Samurai FRONT'}; ['Candy'] = {'Candy'}; ['Haunted'] = {'Haunted', 'Haunted FRONT'}; ['Hell'] = {'Hell'}; ['Heaven'] = {'Heaven'};
         -- Tech
-        ['Ice Tech'] = {'Ice Tech'}; ['Tech City'] = {'Tech City'; 'Tech City FRONT'}; ['Dark Tech'] = {'Dark Tech'; 'Dark Tech FRONT'}; ['Steampunk'] = {'Steampunk'; 'Steampunk FRONT'}, ['Alien Forest'] = {"Alien Forest"; "Alien Forest FRONT"}, ['Alien Lab'] = {"Alien Forest"; "Alien Lab FRONT"};
+        ['Ice Tech'] = {'Ice Tech'}; ['Tech City'] = {'Tech City'; 'Tech City FRONT'}; ['Dark Tech'] = {'Dark Tech'; 'Dark Tech FRONT'}; ['Steampunk'] = {'Steampunk'; 'Steampunk FRONT'}, ['Alien Forest'] = {"Alien Forest"; "Alien Forest FRONT"}, ['Alien Lab'] = {"Alien Forest"; "Alien Lab FRONT"}, ['Glitch'] = {"Glitch";"Glitch FRONT"}, ["Hacker Portal"] = {"Hacker Portal", "Hacker Portal FRONT"};
     }
 
     local AreaList = { --These match the IMightKillMyselfCuaseOfThis table
@@ -36,6 +36,7 @@ local CurrencyOrder = {"Gingerbread","Tech Coins", "Fantasy Coins", "Coins", "Di
         'Town'; 'Forest'; 'Beach'; 'Mine'; 'Winter'; 'Glacier'; 'Desert'; 'Volcano';
         'Enchanted Forest'; 'Ancient'; 'Samurai'; 'Candy'; 'Haunted'; 'Hell'; 'Heaven';
         'Ice Tech'; 'Tech City'; 'Dark Tech'; 'Steampunk'; 'Alien Lab'; 'Alien Forest';
+        'Glitch'; 'Hacker Portal';
     }
 
     local Chests = {
