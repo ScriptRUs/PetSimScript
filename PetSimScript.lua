@@ -150,7 +150,32 @@ function CollectOrbs()
     game.workspace['__THINGS']['__REMOTES']["claim orbs"]:FireServer(ohTable1)
 end
 ]]
+local s =
+    setmetatable(
+    {},
+    {
+        __index = function(self, service)
+            return game:GetService(service)
+        end,
+        __newindex = function(self, key)
+            self[key] = nil
+        end
+    }
+)
 
+local Ser;
+
+for i, v in next, getreg() do
+    if typeof(v) == "table" then
+        if rawget(v, "Services") then
+            Ser = v.Services
+            break
+        end
+    end
+end
+
+
+local user = s["Players"].LocalPlayer
 if _G.MyConnection then _G.MyConnection:Disconnect() end
 _G.MyConnection = game.Workspace.__THINGS.Orbs.ChildAdded:Connect(function(Orb)
     game.Workspace.__THINGS.__REMOTES["claim orbs"]:FireServer({{Orb.Name}})
@@ -192,6 +217,14 @@ end)
 ToggleSettings:Toggle("Auto Collect Loot Bags", function(Val)
 	LootBag = Val
 end)
+ToggleSettings:Label("Please Choose A Spot Hidden From Others")
+ToggleSettings:Label("Before Using The Beta Invisible Feature")
+ToggleSettings:Button("Go Invisible", function()
+    if(user.Character and user.Character:FindFirstChild("LowerTorso") or user.Character:FindFirstChildWhichIsA("LowerTorso")) then
+        user.character.LowerTorso.Root:Destroy()
+    end
+end)
+ToggleSettings:Label("Pets Will Not Hide For Now!")
 local CurrentFarmingPets = {}
 spawn(function()
 	while true and rs:wait() do wait()
