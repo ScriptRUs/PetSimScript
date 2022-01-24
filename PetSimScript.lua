@@ -181,6 +181,8 @@ _G.MyConnection = game.Workspace.__THINGS.Orbs.ChildAdded:Connect(function(Orb)
     game.Workspace.__THINGS.__REMOTES["claim orbs"]:FireServer({{Orb.Name}})
 end)
 
+
+
 do
 	local ui = game:GetService("CoreGui"):FindFirstChild("LuxtLibWisteria GUI")
 	if ui then
@@ -217,6 +219,7 @@ end)
 ToggleSettings:Toggle("Auto Collect Loot Bags", function(Val)
 	LootBag = Val
 end)
+
 ToggleSettings:Label("Please Choose A Spot Hidden From Others")
 ToggleSettings:Label("Before Using The Beta Invisible Feature")
 ToggleSettings:Button("Go Invisible", function()
@@ -227,7 +230,7 @@ end)
 ToggleSettings:Label("Pets Will Not Hide For Now!")
 local CurrentFarmingPets = {}
 spawn(function()
-	while true and rs:wait() do wait()
+        while true and rs:wait() do wait(8)
 		if FarmingEnabled then
 			local pethingy = GetMyPets()
 			if FarmingType == 'Normal' then
