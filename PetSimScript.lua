@@ -471,6 +471,47 @@ while task.wait() and _G.AutoRewards do
 	workspace.__THINGS.__REMOTES["redeem rank rewards"]:InvokeServer({})			
 end
 
+MiscWindow:Toggle("Buy Merchant Slot 1", function(Vals)
+	merchantBuy1 = Vals
+end)
+MiscWindow:Toggle("Buy Merchant Slot 2", function(Vals)
+	merchantBuy2 = Vals
+end)
+MiscWindow:Toggle("Buy Merchant Slot 3", function(Vals)
+	merchantBuy3 = Vals
+end)
+
+spawn(function()
+    while true do wait(0.1)
+    local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
+    
+    if (isMerchantHere) then
+        for i=1, MerchantBuyer do
+            if merchantBuy1 then
+            local ohTable1 = {
+	            [1] = 1
+            }
+            workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
+
+            end
+            if merchantBuy2 then
+            local ohTable1 = {
+	            [1] = 2
+            }
+            workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
+            end
+            if merchantBuy3 then
+
+            local ohTable1 = {
+	            [1] = 3
+            }
+            workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
+            end
+        end
+    end;
+    end
+end
+)
 MiscWindow:Button("Get Gamepasses", function()
 	require(game:GetService("ReplicatedStorage").Framework.Modules.Client["5 | Gamepasses"]).Owns = function() return true end
 end)
