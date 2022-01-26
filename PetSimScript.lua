@@ -486,9 +486,7 @@ end)
 spawn(function()
     while true do wait(0.1)
     local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
-    
     if (isMerchantHere) then
-        for i=1, MerchantBuyer do
             if merchantBuy1 then
             local ohTable1 = {
 	            [1] = 1
@@ -509,11 +507,11 @@ spawn(function()
             }
             workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
             end
-        end
-    end;
+    elseif not (isMerchantHere) then
+	wait(0.1)
     end
 end
-)
+end)
 MiscWindow:Button("Get Gamepasses", function()
 	require(game:GetService("ReplicatedStorage").Framework.Modules.Client["5 | Gamepasses"]).Owns = function() return true end
 end)
