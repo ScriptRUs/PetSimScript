@@ -18,7 +18,7 @@ local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("F
 local Network = GameLibrary.Network
 local Run_Service = game:GetService("RunService")
 local rs = Run_Service.RenderStepped
-local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins", "Diamonds",}
+local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins",}
 
     local IMightKillMyselfCauseOfThis = {
         --Misc
@@ -366,16 +366,45 @@ table.sort(MyEggData, function(a, b)
 	return a.Price < b.Price
 end)
 
-local EggData = {}
-for i,v in pairs(CurrencyOrder) do
-	table.insert(EggData, " ")
-	table.insert(EggData, "-- "..v.." --")
+
+local EggTech = {"Tech Coins"}
+local EggFantasy = {"Fantasy Coins"}
+local EggCoins = {"Coins"}
+local DataTech = {}
+local DataFantasy = {}
+local DataCoins = {}
+-----------------Egg Data Lists
+for i,v in pairs(EggTech) do
+	table.insert(DataTech, " ")
+	table.insert(DataTech, "-- "..v.." --")
 	for a,b in pairs(MyEggData) do
 		if b.Currency == v then
-			table.insert(EggData, b.Name)
+			table.insert(DataTech, b.Name)
 		end
 	end
 end
+for i,v in pairs(EggFantasy) do
+	table.insert(DataFantasy, " ")
+	table.insert(DataFantasy, "-- "..v.." --")
+	for a,b in pairs(MyEggData) do
+		if b.Currency == v then
+			table.insert(DataFantasy, b.Name)
+		end
+	end
+end
+for i,v in pairs(EggCoins) do
+	table.insert(DataCoins, " ")
+	table.insert(DataCoins, "-- "..v.." --")
+	for a,b in pairs(MyEggData) do
+		if b.Currency == v then
+			table.insert(DataCoins, b.Name)
+		end
+	end
+end
+
+
+
+
 local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
 local IDToName = {}
 local NameToID = {}
@@ -440,7 +469,13 @@ spawn(function()
 		end
 	end
 end)
-PetSetting:DropDown('Egg', EggData, function(EggsTable)
+PetSetting:DropDown('Tech Eggs', DataTech, function(EggsTable)
+	SelectedEgg = EggsTable
+end)
+PetSetting:DropDown('Fantasy Eggs', EggFantasy, function(EggsTable)
+	SelectedEgg = EggsTable
+end)
+PetSetting:DropDown('Coins Eggs', EggCoins, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
 PetSetting:Button("Remove Animation", function()
