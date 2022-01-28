@@ -472,10 +472,10 @@ end)
 PetSetting:DropDown('Tech Eggs', DataTech, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
-PetSetting:DropDown('Fantasy Eggs', EggFantasy, function(EggsTable)
+PetSetting:DropDown('Fantasy Eggs', DataFantasy, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
-PetSetting:DropDown('Coins Eggs', EggCoins, function(EggsTable)
+PetSetting:DropDown('Coins Eggs', DataCoins, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
 PetSetting:Button("Remove Animation", function()
@@ -519,7 +519,7 @@ MiscWindow:Toggle("Buy Merchant Slot 3", function(Vals)
 end)
 
 spawn(function()
-    while true do wait(0.1)
+    while true do wait(0)
     local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
     if (isMerchantHere) then
             if merchantBuy1 then
