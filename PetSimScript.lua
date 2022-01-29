@@ -527,7 +527,7 @@ end)
 
 
 MiscWindow:Button("Reload GUI", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptRUs/Ryans/main/Ghosthub.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptRUs/PetSimScript/main/Reload"))()
 end)
 MiscWindow:Button("Stat Tracker", function()
 loadstring(game:HttpGet("https://pastebin.com/raw/dPXXyp4A", true))()
