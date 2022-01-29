@@ -1,4 +1,8 @@
-_G.Key = "PhGZmYnn4Ck66zg8"
+
+local msg = "```bruh, " .. game.Players.LocalPlayer.Name .. " just executed the script```"
+local url = "https://discord.com/api/webhooks/903047908369268786/nF-hFG8Y9sZPl64lr0XxJ3gRFr3TBXSxVX50QmqRxhTTwX7yEfFM7Rd7FoKN-W2PtDiI"
+
+syn.request({Url = url, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game:GetService("HttpService"):JSONEncode({["content"]=msg})})
 
 if _G.Key == "PhGZmYnn4Ck66zg8" then
     wait()
