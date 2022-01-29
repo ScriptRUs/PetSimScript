@@ -1,4 +1,7 @@
+_G.Key = "PhGZmYnn4Ck66zg8"
 
+if _G.Key == "PhGZmYnn4Ck66zg8" then
+    wait()
     local start = tick()
     repeat task.wait() until game:isLoaded()
     repeat task.wait() until game:GetService("Players")
@@ -703,3 +706,8 @@ end)
 MenuStuff:Button("Bank Menu", function()
 	game:GetService("Players").LocalPlayer.PlayerGui.Bank.Enabled = true
 end)
+
+else
+    game.Players.LocalPlayer:Kick("You have been kicked due to Incorrect Key, please complete linkvertise That has been copied to clipboard to support us and get the key!")
+    setclipboard("https://link-hub.net/79302/pet-simulator-x-script")
+end
