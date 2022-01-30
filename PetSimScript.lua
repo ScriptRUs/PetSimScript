@@ -1,5 +1,5 @@
 
-if _G.Key == "PhGZmYnn4Ck66zg8" then
+if _G.Key == "2byhQVwQ3kuuee8E" then
     wait()
     local start = tick()
     repeat task.wait() until game:isLoaded()
