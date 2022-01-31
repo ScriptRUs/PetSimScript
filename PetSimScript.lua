@@ -808,5 +808,5 @@ end)
 
 else
     game.Players.LocalPlayer:Kick("You have been kicked due to Incorrect Key, please complete linkvertise That has been copied to clipboard to support us and get the key!")
-    setclipboard("https://link-hub.net/79302/pet-simulator-x-script")
+    setclipboard("https://linkvertise.com/79302/linkvertise-1/1")
 end
