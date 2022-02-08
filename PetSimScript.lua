@@ -1,5 +1,4 @@
 
-if _G.Key == "43b5cetz2PM7pBMD" then
     wait()
     local start = tick()
     repeat task.wait() until game:isLoaded()
@@ -488,7 +487,4 @@ end)
 MiscWindow:Button("Get Gamepasses", function()
 	require(game:GetService("ReplicatedStorage").Framework.Modules.Client["5 | Gamepasses"]).Owns = function() return true end
 end)
-else
-    game.Players.LocalPlayer:Kick("You have been kicked due to Incorrect Key, please complete linkvertise That has been copied to clipboard to support us and get the key!")
-    setclipboard("https://linkvertise.com/79302/linkvertise-1/1")
-end
+Print("loaded")
