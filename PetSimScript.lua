@@ -40,6 +40,15 @@ local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins",}
         'Glitch'; 'Hacker Portal';
     }
 
+    local Chests = {
+"All";
+        -- Spawn
+        "Magma Chest",
+        -- Fantasy
+        "Enchanted Chest", "Hell Chest", "Haunted Chest", "Angel Chest", "Grand Heaven Chest",
+        -- Tech
+        "Giant Tech Chest"; "Giant Steampunk Chest"; "Giant Alien Chest";
+    }
 
 workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "buy egg")
 workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "join coin")
@@ -142,12 +151,73 @@ function CollectOrbs()
     game.workspace['__THINGS']['__REMOTES']["claim orbs"]:FireServer(ohTable1)
 end
 ]]
+local s =
+    setmetatable(
+    {},
+    {
+        __index = function(self, service)
+            return game:GetService(service)
+        end,
+        __newindex = function(self, key)
+            self[key] = nil
+        end
+    }
+)
 
+local Ser;
+
+for i, v in next, getreg() do
+    if typeof(v) == "table" then
+        if rawget(v, "Services") then
+            Ser = v.Services
+            break
+        end
+    end
+end
+
+
+local user = s["Players"].LocalPlayer
 if _G.MyConnection then _G.MyConnection:Disconnect() end
 _G.MyConnection = game.Workspace.__THINGS.Orbs.ChildAdded:Connect(function(Orb)
     game.Workspace.__THINGS.__REMOTES["claim orbs"]:FireServer({{Orb.Name}})
 end)
 
+function HatchEgg(Pet)
+   local pet = Pet
+   for i,v in pairs(game.ReplicatedStorage.Game.Pets:GetChildren()) do
+       if string.split(tostring(v), ' - ')[2] == pet then
+           pet = string.split(tostring(v), ' - ')[1]
+       end
+   end
+   local tbl = {
+       {
+       nk = 'Preston',
+       idt = '69',
+       e = false,
+       uid = '69',
+       s = 999999999999,
+       id = pet,
+   }}
+   local egg
+   for i_,script in pairs(game.ReplicatedStorage.Game.Eggs:GetDescendants()) do
+       if script:IsA('ModuleScript') then
+           if typeof(require(script).drops) == 'table' then
+               for i,v in pairs(require(script).drops) do
+                   if v[1] == pet then
+                       egg = require(script).displayName
+                   end
+               end
+           end
+       end
+   end
+	wait(0.1)
+   if Pet == 'Huge Cat' then egg = 'Cracked Egg' end
+   for i,v in pairs(getgc(true)) do
+       if (typeof(v) == 'table' and rawget(v, 'OpenEgg')) then
+           v.OpenEgg(egg, tbl)
+       end
+   end
+end
 
 do
 	local ui = game:GetService("CoreGui"):FindFirstChild("LuxtLibWisteria GUI")
@@ -188,7 +258,14 @@ end)
 ToggleSettings:Slider("Wait Time", 1, 10, function(Values)
     WaitTime = Values
 end)
-
+ToggleSettings:Label("Please Choose A Spot Hidden From Others")
+ToggleSettings:Label("Before Using The Beta Invisible Feature")
+ToggleSettings:Button("Go Invisible", function()
+    if(user.Character and user.Character:FindFirstChild("LowerTorso") or user.Character:FindFirstChildWhichIsA("LowerTorso")) then
+        user.character.LowerTorso.Root:Destroy()
+    end
+end)
+ToggleSettings:Label("Pets Will Not Hide For Now!")
 local CurrentFarmingPets = {}
 spawn(function()
         while true and rs:wait() do wait(WaitTime)
@@ -206,6 +283,18 @@ spawn(function()
 							end
 						end
 						repeat rs:wait() until not game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(cointhiny[i].index)
+					end
+				end
+
+			elseif FarmingType == 'Chest' then
+				for i,v in pairs(AllChests()) do
+					if (v.n == FarmingSingleChest) or (FarmingSingleChest == 'All') then
+						local starttick = tick()
+						for a, b in pairs(pethingy) do
+							pcall(function() FarmCoin(v.index, b) end)
+						end
+						repeat rs:wait() until not game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) or #game:GetService("Workspace")["__THINGS"].Coins[v.index].Pets:GetChildren() == 0
+						warn(v.n .. " has been broken in", tick()-starttick)
 					end
 				end
 
@@ -275,7 +364,7 @@ spawn(function()
         end
 end
 end)
-AutoSettings:DropDown("Type",{'Normal', 'Multi Target', 'Highest Value', 'Nearest'}, function(Values)
+AutoSettings:DropDown("Type",{'Normal', 'Chest', 'Multi Target', 'Highest Value', 'Nearest'}, function(Values)
 	FarmingType = Values
 end)
 AutoSettings:DropDown("If chest", Chests, function(FarmChest)
@@ -402,13 +491,15 @@ end)
 PetToggle:Toggle("Open Eggs",function(State)
 	OpenEggs = State
 end)
-
+PetToggle:Toggle("Triple Eggs", function(State)
+	TripleEggs = State
+end)
 spawn(function()
 	while true do wait()
 		if OpenEggs then
 			local ohTable1 = {
 				[1] = SelectedEgg,
-				[2] = false
+				[2] = TripleEggs
 			}
 			workspace.__THINGS.__REMOTES["buy egg"]:InvokeServer(ohTable1)
 		end
@@ -433,6 +524,77 @@ PetSetting:Button("Remove Animation", function()
 	end
 end)
 
+
+MiscWindow:Button("Reload GUI", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptRUs/PetSimScript/main/Reload"))()
+end)
+MiscWindow:Button("Stat Tracker", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/dPXXyp4A", true))()
+end)
+MiscWindow:Button("Show Pets Hidden Chances", function()
+workspace.__MAP.Eggs.DescendantAdded:Connect(function(a)
+   if a.Name == 'EggInfo' then
+       for i,v in pairs(a.Frame.Pets:GetChildren()) do
+           if v:IsA('Frame') and v.Thumbnail.Chance.Text == '??' then
+               local pet
+               for _,tbl in pairs(getgc(true)) do
+                   if (typeof(tbl) == 'table' and rawget(tbl, 'thumbnail')) then
+                       if tbl.thumbnail == v.Thumbnail.Image then
+                           pet = string.split(tostring(tbl.model.Parent), ' - ')[1]
+                       end
+                   end
+               end
+               for _,egg in pairs(game.ReplicatedStorage.Game.Eggs:GetDescendants()) do
+                   if egg:IsA('ModuleScript') and typeof(require(egg).drops) == 'table' then
+                       for _,drop in pairs(require(egg).drops) do
+                           if pet == '266' then v.Thumbnail.Chance.Text = '0.000002%' return end
+                           if drop[1] == pet then
+                               v.Thumbnail.Chance.Text = drop[2] .. '%'
+                           end
+                       end
+                   end
+               end
+           end
+       end
+   end
+end)
+
+local lib = require(game.ReplicatedStorage.Framework.Library)
+table.foreach(lib.Save.Get(), print)
+
+local oldworld = lib.Save.Get().World
+while wait(0.1) do
+   if lib.Save.Get().World ~= oldworld then
+       oldworld = lib.Save.Get().World
+       workspace.__MAP.Eggs.DescendantAdded:Connect(function(a)
+           if a.Name == 'EggInfo' then
+               for i,v in pairs(a.Frame.Pets:GetChildren()) do
+                   if v:IsA('Frame') and v.Thumbnail.Chance.Text == '??' then
+                       local pet
+                       for _,tbl in pairs(getgc(true)) do
+                           if (typeof(tbl) == 'table' and rawget(tbl, 'thumbnail')) then
+                               if tbl.thumbnail == v.Thumbnail.Image then
+                                   pet = string.split(tostring(tbl.model.Parent), ' - ')[1]
+                               end
+                           end
+                       end
+                       for _,egg in pairs(game.ReplicatedStorage.Game.Eggs:GetDescendants()) do
+                           if egg:IsA('ModuleScript') and typeof(require(egg).drops) == 'table' then
+                               for _,drop in pairs(require(egg).drops) do
+                                   if pet == '266' then v.Thumbnail.Chance.Text = '0.000002%' return end
+                                   if drop[1] == pet then
+                                       v.Thumbnail.Chance.Text = drop[2] .. '%'
+                                   end
+                               end
+                           end
+                       end
+                   end
+               end
+           end
+       end)
+   end
+end
+end)
 MiscWindow:Toggle("Collect VIP & Rank Rewards", function(autorewards)
 	if autorewards == true then
 		_G.AutoRewards = true
@@ -487,4 +649,158 @@ end)
 MiscWindow:Button("Get Gamepasses", function()
 	require(game:GetService("ReplicatedStorage").Framework.Modules.Client["5 | Gamepasses"]).Owns = function() return true end
 end)
-Print("loaded")
+MiscWindow:Button("Possible Anti-Lag", function()
+	game:GetService("Players").LocalPlayer.PlayerScripts.Scripts.GUIs["Coin Rewards HUD"].Disabled = true
+    if game:GetService("Workspace"):FindFirstChild("__DEBRIS") then
+      game:GetService("Workspace")["__DEBRIS"]:Destroy()
+    end
+end)
+
+MiscWindow:Button("FPS Boost - Beta", function()
+	local decalsyeeted = true -- Leaving this on makes games look shitty but the fps goes up by at least 20.
+	local g = game
+	local w = g.Workspace
+	local l = g.Lighting
+	local t = w.Terrain
+	t.WaterWaveSize = 0
+	t.WaterWaveSpeed = 0
+	t.WaterReflectance = 0
+	t.WaterTransparency = 0
+	l.GlobalShadows = false
+	l.FogEnd = 9e9
+	l.Brightness = 0
+	settings().Rendering.QualityLevel = "Level01"
+	for i, v in pairs(g:GetDescendants()) do
+		if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+			v.Material = "Plastic"
+			v.Reflectance = 0
+		elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+			v.Transparency = 1
+		elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+			v.Lifetime = NumberRange.new(0)
+		elseif v:IsA("Explosion") then
+			v.BlastPressure = 1
+			v.BlastRadius = 1
+		elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") or v:IsA("Sparkles") then
+			v.Enabled = false
+		elseif v:IsA("MeshPart") then
+			v.Material = "Plastic"
+			v.Reflectance = 0
+			v.TextureID = 10385902758728957
+		end
+	end
+	for i, e in pairs(l:GetChildren()) do
+		if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+			e.Enabled = false
+		end
+	end
+end)
+
+FunWindow:Button("Visual Dupe Gems", function()
+	function comma_value(amount)
+	  local formatted = amount
+	  while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k == 0) then
+		  break
+		end
+	  end
+	  return formatted
+	end
+
+	local diamonds = game.Players.LocalPlayer.PlayerGui.Main.Right.Diamonds.Amount
+	local old = diamonds.Text
+	local oldNumber = string.gsub(old, ",", "")
+	local newNumber = oldNumber * 2
+	local new = comma_value(newNumber)
+	local newString = tostring(new)
+	diamonds.Text = newString
+end)
+
+FunWindow:Button("Visual Dupe Tech Coins", function()
+	function comma_value(amount)
+	  local formatted = amount
+	  while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k == 0) then
+		  break
+		end
+	  end
+	  return formatted
+	end
+
+	local TechCoin = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right["Tech Coins"].Amount
+	local old = TechCoin.Text
+	local oldNumber = string.gsub(old, ",", "")
+	local newNumber = oldNumber * 2
+	local new = comma_value(newNumber)
+	local newString = tostring(new)
+	TechCoin.Text = newString
+end)
+FunWindow:Button("Visual Dupe Fantasy Coins", function()
+	function comma_value(amount)
+	  local formatted = amount
+	  while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k == 0) then
+		  break
+		end
+	  end
+	  return formatted
+	end
+
+	local FantasyCoin = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right["Fantasy Coins"].Amount
+	local old = FantasyCoin.Text
+	local oldNumber = string.gsub(old, ",", "")
+	local newNumber = oldNumber * 2
+	local new = comma_value(newNumber)
+	local newString = tostring(new)
+	FantasyCoin.Text = newString
+end)
+FunWindow:Button("Visual Dupe Regular Coins", function()
+	function comma_value(amount)
+	  local formatted = amount
+	  while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k == 0) then
+		  break
+		end
+	  end
+	  return formatted
+	end
+
+	local RegularCoin = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right.Coins.Amount
+	local old = RegularCoin.Text
+	local oldNumber = string.gsub(old, ",", "")
+	local newNumber = oldNumber * 2
+	local new = comma_value(newNumber)
+	local newString = tostring(new)
+	RegularCoin.Text = newString
+end)
+FunWindow:TextBox("Fake Hatcher", "Pet Name Here", function(PetName)
+    HatchEgg(PetName)
+end)
+MenuStuff:Button("Golden Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.Golden.Enabled = true
+end)
+MenuStuff:Button("Rainbow Menu",function()
+	game:GetService("Players").LocalPlayer.PlayerGui.Rainbow.Enabled = true
+end)
+MenuStuff:Button("Dark Matter Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.DarkMatter.Enabled = true
+end)
+MenuStuff:Button("Fuse Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.FusePets.Enabled = true
+end)
+MenuStuff:Button("Upgrade Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.Upgrades.Enabled = true
+end)
+MenuStuff:Button("Enchantment Menu",  function()
+	game:GetService("Players").LocalPlayer.PlayerGui.EnchantPets.Enabled = true
+end)
+MenuStuff:Button("Merchant Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.Merchant.Enabled = true
+end)
+MenuStuff:Button("Bank Menu", function()
+	game:GetService("Players").LocalPlayer.PlayerGui.Bank.Enabled = true
+end)
