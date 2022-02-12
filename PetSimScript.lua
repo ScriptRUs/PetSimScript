@@ -19,7 +19,7 @@ local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("F
 local Network = GameLibrary.Network
 local Run_Service = game:GetService("RunService")
 local rs = Run_Service.RenderStepped
-local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins",}
+local CurrencyOrder = {"Rainbow Coins","Tech Coins", "Fantasy Coins", "Coins",}
 
     local IMightKillMyselfCauseOfThis = {
         --Misc
@@ -30,24 +30,36 @@ local CurrencyOrder = {"Tech Coins", "Fantasy Coins", "Coins",}
         ['Enchanted Forest'] = {'Enchanted Forest', 'Enchanted Forest FRONT'}; ['Ancient'] = {'Ancient'}; ['Samurai'] = {'Samurai', 'Samurai FRONT'}; ['Candy'] = {'Candy'}; ['Haunted'] = {'Haunted', 'Haunted FRONT'}; ['Hell'] = {'Hell'}; ['Heaven'] = {'Heaven'};
         -- Tech
         ['Ice Tech'] = {'Ice Tech'}; ['Tech City'] = {'Tech City'; 'Tech City FRONT'}; ['Dark Tech'] = {'Dark Tech'; 'Dark Tech FRONT'}; ['Steampunk'] = {'Steampunk'; 'Steampunk FRONT'}, ['Alien Forest'] = {"Alien Forest"; "Alien Forest FRONT"}, ['Alien Lab'] = {"Alien Forest"; "Alien Lab FRONT"}, ['Glitch'] = {"Glitch";"Glitch FRONT"}, ["Hacker Portal"] = {"Hacker Portal", "Hacker Portal FRONT"};
+        ['Axolotl Ocean'] = {'Axolotl Ocean'; 'Axolotl Ocean FRONT'}; ['Axolotl Deep Ocean'] = {'Axolotl Deep Ocean'; 'Axolotl Deep Ocean FRONT'}; ['Axolotl Cave'] = {'Axolotl Cave'; 'Axolotl Cave FRONT'};
     }
 
-    local AreaList = { --These match the IMightKillMyselfCuaseOfThis table
+
+    local AreaSpawn = {
         'All'; 'VIP';
         'Town'; 'Forest'; 'Beach'; 'Mine'; 'Winter'; 'Glacier'; 'Desert'; 'Volcano';
+    }
+    
+    local AreaFantasy = {
+        'Town'; 'Forest'; 'Beach'; 'Mine'; 'Winter'; 'Glacier'; 'Desert'; 'Volcano';
         'Enchanted Forest'; 'Ancient'; 'Samurai'; 'Candy'; 'Haunted'; 'Hell'; 'Heaven';
+    }
+    local AreaTech = {
         'Ice Tech'; 'Tech City'; 'Dark Tech'; 'Steampunk'; 'Alien Lab'; 'Alien Forest';
         'Glitch'; 'Hacker Portal';
     }
-
+    local AreaAxolotl = {
+        'Axolotl Ocean';'Axolotl Deep Ocean';'Axolotl Cave';
+    }
     local Chests = {
-"All";
+        "All";
         -- Spawn
         "Magma Chest",
         -- Fantasy
         "Enchanted Chest", "Hell Chest", "Haunted Chest", "Angel Chest", "Grand Heaven Chest",
         -- Tech
         "Giant Tech Chest"; "Giant Steampunk Chest"; "Giant Alien Chest";
+        -- Axolotl
+        "Giant Ocean Chest";
     }
 
 workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "buy egg")
@@ -247,6 +259,7 @@ local FunWindow = Fun:Section("Visual Multis")
 ------Misc Stuff-----
 local mISCS = Luxt:Tab("Miscs", 6087485864)
 local MiscWindow = mISCS:Section("Misc Stuff")
+local EggNotif = mISCS:Section("Egg Notifier")
 
 
 ToggleSettings:Toggle("Start Farming",function(State)
@@ -370,10 +383,20 @@ end)
 AutoSettings:DropDown("If chest", Chests, function(FarmChest)
 	FarmingSingleChest = FarmChest
 end)
-AutoSettings:DropDown("Area", AreaList, function(FarmArea)
-	FarmingArea = FarmArea
-end)
 
+
+AutoSettings:DropDown("Area| Spawn", AreaSpawn, function(FarmArea)
+    FarmingArea = FarmArea
+end)
+AutoSettings:DropDown("Area| Fantasy", AreaFantasy, function(FarmArea)
+    FarmingArea = FarmArea
+end)
+AutoSettings:DropDown("Area| Tech", AreaTech, function(FarmArea)
+    FarmingArea = FarmArea
+end)
+AutoSettings:DropDown("Area| Axolotl", AreaAxolotl, function(FarmArea)
+    FarmingArea = FarmArea
+end)
 PetToggle:Toggle("Start Toggle", function(State)
 	StartCombine = State
 end)
@@ -402,14 +425,24 @@ table.sort(MyEggData, function(a, b)
 	return a.Price < b.Price
 end)
 
-
+local EggRainbow = {"Rainbow Coins"}
 local EggTech = {"Tech Coins"}
 local EggFantasy = {"Fantasy Coins"}
 local EggCoins = {"Coins"}
+local DataAxolotl = {}
 local DataTech = {}
 local DataFantasy = {}
 local DataCoins = {}
 -----------------Egg Data Lists
+for i,v in pairs(EggRainbow) do
+	table.insert(DataAxolotl, " ")
+	table.insert(DataAxolotl, "-- "..v.." --")
+	for a,b in pairs(MyEggData) do
+		if b.Currency == v then
+			table.insert(DataAxolotl, b.Name)
+		end
+	end
+end
 for i,v in pairs(EggTech) do
 	table.insert(DataTech, " ")
 	table.insert(DataTech, "-- "..v.." --")
@@ -504,6 +537,9 @@ spawn(function()
 			workspace.__THINGS.__REMOTES["buy egg"]:InvokeServer(ohTable1)
 		end
 	end
+end)
+PetSetting:DropDown('Axolotl Eggs', DataAxolotl, function(EggsTable)
+    SelectedEgg = EggsTable
 end)
 PetSetting:DropDown('Tech Eggs', DataTech, function(EggsTable)
 	SelectedEgg = EggsTable
@@ -696,6 +732,8 @@ MiscWindow:Button("FPS Boost - Beta", function()
 	end
 end)
 
+
+
 FunWindow:Button("Visual Dupe Gems", function()
 	function comma_value(amount)
 	  local formatted = amount
@@ -777,6 +815,8 @@ FunWindow:Button("Visual Dupe Regular Coins", function()
 	local newString = tostring(new)
 	RegularCoin.Text = newString
 end)
+
+
 FunWindow:TextBox("Fake Hatcher", "Pet Name Here", function(PetName)
     HatchEgg(PetName)
 end)
