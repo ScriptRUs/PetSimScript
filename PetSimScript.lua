@@ -244,7 +244,7 @@ end
 
 local Luxtl = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Luxware-UI-Library/main/Source.lua"))()
 
-local Luxt = Luxtl.CreateWindow("Wisteria GUI", 6105620301)
+local Luxt = Luxtl.CreateWindow("Ghost Pet X", 6105620301)
 ------essential stuff
 local essential = Luxt:Tab("Essential", 6087485864)
 local Discord = essential:Section("Discord Link")
