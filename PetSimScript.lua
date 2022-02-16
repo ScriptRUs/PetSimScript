@@ -570,6 +570,10 @@ AutoSettings:DropDown("If chest", Chests, function(FarmChest)
 	FarmingSingleChest = FarmChest
 end)
 
+local AxolotlTable = {}
+for i,v in pairs(game:GetService("ReplicatedStorage").Game.Coins.Axolotl:GetChildren()) do
+    table.insert(AxolotlTable, v.Name)
+end
 
 AutoSettings:DropDown("Area| Spawn", AreaSpawn, function(FarmArea)
     FarmingArea = FarmArea
@@ -580,7 +584,7 @@ end)
 AutoSettings:DropDown("Area| Tech", AreaTech, function(FarmArea)
     FarmingArea = FarmArea
 end)
-AutoSettings:DropDown("Area| Axolotl", AreaAxolotl, function(FarmArea)
+AutoSettings:DropDown("Area| Axolotl", AxolotlTable, function(FarmArea)
     FarmingArea = FarmArea
 end)
 PetToggle:Toggle("Start Toggle", function(State)
@@ -927,5 +931,4 @@ end)
        end
     end
     end)
-
 
