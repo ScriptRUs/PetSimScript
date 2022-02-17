@@ -260,6 +260,7 @@ local AutoSettings = Mains:Section("Autofarm Settings")
 local Pets = Luxt:Tab("Pet", 6087485864)
 local PetToggle = Pets:Section("Toggles")
 local PetSetting = Pets:Section("Settings")
+local Enchant = Pets:Section("Pet Enchants")
 ------Menu Stuff-----
 local Menus = Luxt:Tab("Menus", 6087485864)
 local MenuStuff = Menus:Section("All Menu Uis")
@@ -510,7 +511,20 @@ spawn(function()
 						end)
 					end
 				end
-
+		------------------------------
+                elseif FarmingType == 'Nearest' then
+                local NearestOne = nil
+                local NearestDistance = math.huge
+                for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetChildren()) do
+                    if (v.POS.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < NearestDistance then
+                        NearestOne = v
+                        NearestDistance = (v.POS.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+                     end
+                end
+                for a,b in pairs(pethingy) do
+                    spawn(function() FarmCoin(NearestOne.Name, b) end)
+                end
+                -----------------------
 			elseif FarmingType == 'Highest Value' then
 				local cointhiny = GetCoinTable(FarmingArea)
 				for a,b in pairs(pethingy) do
@@ -751,7 +765,86 @@ PetSetting:Button("Remove Animation", function()
 end)
 
 
+Enchant:Label("Please Select Everything Correctly For It To Work")
+Enchant:DropDown("Select Enchant", EnchantsList, function(selectenchantfunc)
+    if selectenchantfunc then
+        _G.SelEnchant1 = selectenchantfunc
+    end
+    print("Selected Enchant: ", _G.SelEnchant1)
+end)
+--
+---------------------------
+--
+local EnchantLevel = {1, 2, 3, 4, 5}
+Enchant:DropDown("Select Level", EnchantLevel, function(selectnumlevel)
+    if selectnumlevel then
+        _G.SelLevel1 = selectnumlevel
+    end
+    print("Selected Level: ", _G.SelLevel1)
+end)
+--
+---------------------------
 
+Enchant:Button("Start Enchant (Equiped Pets)", function()
+--
+
+_G.EMERGENCYSTOP = false
+
+local Wanted = {
+[_G.SelEnchant1] = _G.SelLevel1 or 1;
+}
+--
+local PettoRarity = {}
+local a = require(game:GetService("ReplicatedStorage").Framework.Modules["1 | Directory"].Pets["Grab All Pets"])
+for i, v in pairs(a) do
+PettoRarity[i] = v.rarity
+end
+--
+function GetPetTable(PetUID)
+local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
+for i, v in pairs(Library.Save.Get().Pets) do
+    if v.uid == PetUID then
+        return v
+    end
+end
+end
+workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "enchant pet")
+wait(0.5)
+local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
+for i, v in pairs(Library.Save.Get().Pets) do
+if v.e and PettoRarity[v.id] ~= 'Mythical' and not _G.EMERGENCYSTOP then
+   local haspower = false
+    repeat wait()
+        if GetPetTable(v.uid).powers then
+            for a, b in pairs(GetPetTable(v.uid).powers) do
+                warn(b[1], b[2])
+                print(Wanted[b[1]])
+                if Wanted[b[1]] ~= nil and not haspower and not _G.EMERGENCYSTOP then
+                    if Wanted[b[1]] <= b[2] then
+                        haspower = true
+                        warn("Pet", v.uid, "has", b[1], b[2])
+                    end
+                end
+            end
+            if not haspower and not _G.EMERGENCYSTOP then
+                print("Yea we kinda need new enchantments on", v.uid)
+
+                workspace.__THINGS.__REMOTES["enchant pet"]:InvokeServer({[1] = v.uid})
+                wait(0.1)
+            end
+        else
+            warn("taking", v.uid,'\'s enchanting virginity lol')
+            workspace.__THINGS.__REMOTES["enchant pet"]:InvokeServer({[1] = v.uid})
+            wait(0.1)
+        end
+    until haspower == true or Library.Save.Get().Diamonds < 10000 or _G.EMERGENCYSTOP
+end
+end
+end)
+
+Enchant:Button("STOP ENCHANT", function()
+    _G.EMERGENCYSTOP = true
+end)
 
 
 FunWindow:Button("Visual Dupe Gems", function()
