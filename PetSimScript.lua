@@ -765,11 +765,8 @@ PetSetting:Button("Remove Animation", function()
 end)
 
 Enchant:Label("Please Select Everything Correctly For It To Work")
-Enchant:DropDown("Select Enchant",  {'Magnet','Royalty','Glittering','Rainbow Coins','Tech Coins','Fantasy Coins','Coins','Teamwork','Diamonds','Strength','Chests','Presents','Agility','Charm'} , function(selectenchantfunc)
-    if selectenchantfunc then
-        _G.SelEnchant1 = selectenchantfunc
-    end
-    print("Selected Enchant: ", _G.SelEnchant1)
+Enchant:DropDown("Select Enchant",  {'Magnet','Royalty','Glittering','Rainbow Coins','Tech Coins','Fantasy Coins','Coins','Teamwork','Diamonds','Strength','Chests','Presents','Agility','Charm'} , function(EnchantValues)
+    _G.SelEnchant1 = EnchantValues
 end)
 --
 ---------------------------
