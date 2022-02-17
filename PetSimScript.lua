@@ -781,7 +781,7 @@ local EnchantsList = {
 }
 
 Enchant:Label("Please Select Everything Correctly For It To Work")
-Enchant:DropDown("Select Enchant", EnchantsList, function(selectenchantfunc)
+Enchant:DropDown("Select Enchant", EnchantsList , function(selectenchantfunc)
     if selectenchantfunc then
         _G.SelEnchant1 = selectenchantfunc
     end
