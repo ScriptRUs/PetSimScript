@@ -763,6 +763,12 @@ PetSetting:Button("Remove Animation", function()
 		end
 	end
 end)
+Enchant:Toggle("Auto Withdraw", function(Vals)
+    _G.Withdraws = Vals
+end)
+Enchant:DropDown("Bank Index", {1,2,3,4,5,6,7,8,9,10}, function(Values)
+    _G.BankIndexValue = Values
+end)
 
 Enchant:Label("Please Select Everything Correctly For It To Work")
 Enchant:DropDown("Select Enchant",  {'Magnet','Royalty','Glittering','Rainbow Coins','Tech Coins','Fantasy Coins','Coins','Teamwork','Diamonds','Strength','Chests','Presents','Agility','Charm'} , function(EnchantValues)
@@ -784,62 +790,19 @@ end)
 Enchant:Button("Start Enchant (Equiped Pets)", function()
 --
 
-_G.EMERGENCYSTOP = false
+_G.Stop = false
 
-local Wanted = {
-[_G.SelEnchant1] = _G.SelLevel1 or 1;
+
+_G.BankIndex = _G.BankIndexValue -- Bank index: 1 = your own bank / 2 - 5 = Banks you're invited to
+_G.AutoWithdraw = _G.Withdraws -- will auto withdraw 25b gems or how much gems you have left if you dont have gems left.
+_G.Wanted = { -- Wanted enchants.
+[_G.SelEnchant1] = _G.SelLevel1;
 }
---
-local PettoRarity = {}
-local a = require(game:GetService("ReplicatedStorage").Framework.Modules["1 | Directory"].Pets["Grab All Pets"])
-for i, v in pairs(a) do
-PettoRarity[i] = v.rarity
-end
---
-function GetPetTable(PetUID)
-local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
-for i, v in pairs(Library.Save.Get().Pets) do
-    if v.uid == PetUID then
-        return v
-    end
-end
-end
-workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "enchant pet")
-wait(0.5)
-local Library = require(game:GetService("ReplicatedStorage").Framework.Library)
-for i, v in pairs(Library.Save.Get().Pets) do
-if v.e and PettoRarity[v.id] ~= 'Mythical' and not _G.EMERGENCYSTOP then
-   local haspower = false
-    repeat wait()
-        if GetPetTable(v.uid).powers then
-            for a, b in pairs(GetPetTable(v.uid).powers) do
-                warn(b[1], b[2])
-                print(Wanted[b[1]])
-                if Wanted[b[1]] ~= nil and not haspower and not _G.EMERGENCYSTOP then
-                    if Wanted[b[1]] <= b[2] then
-                        haspower = true
-                        warn("Pet", v.uid, "has", b[1], b[2])
-                    end
-                end
-            end
-            if not haspower and not _G.EMERGENCYSTOP then
-                print("Yea we kinda need new enchantments on", v.uid)
-
-                workspace.__THINGS.__REMOTES["enchant pet"]:InvokeServer({[1] = v.uid})
-                wait(0.1)
-            end
-        else
-            warn("taking", v.uid,'\'s enchanting virginity lol')
-            workspace.__THINGS.__REMOTES["enchant pet"]:InvokeServer({[1] = v.uid})
-            wait(0.1)
-        end
-    until haspower == true or Library.Save.Get().Diamonds < 10000 or _G.EMERGENCYSTOP
-end
-end
+loadstring(game:HttpGet('https://raw.githubusercontent.com/ScriptRUs/PetSimScript/main/Enchant.lua'))()
 end)
 
 Enchant:Button("STOP ENCHANT", function()
-    _G.EMERGENCYSTOP = true
+    _G.Stop = true
 end)
 
 
