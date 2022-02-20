@@ -9,10 +9,6 @@ do--//Init
 end
 
 do --//Checks&Functions
-	if rconsolewarn then
-		rconsoleclear()
-		rconsolewarn('Made by ydnac#2110')
-	end
 	if Library.Network.Invoke('Get my Banks')[_G.BankIndex] == nil then
 		_G.AutoWithdraw = false
 	else
