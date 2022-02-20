@@ -258,8 +258,8 @@ local ToggleSettings = Mains:Section("Autofarm Toggles")
 local AutoSettings = Mains:Section("Autofarm Settings")
 ------Pet Stuff----
 local Pets = Luxt:Tab("Pet", 6087485864)
-local PetToggle = Pets:Section("Toggles")
-local PetSetting = Pets:Section("Settings")
+local HatchEgg = Pets:Section("Pet Hatcher")
+local UpgradePet = Pets:Section("Rainbow & Golden")
 local Enchant = Pets:Section("Pet Enchants")
 ------Menu Stuff-----
 local Menus = Luxt:Tab("Menus", 6087485864)
@@ -601,16 +601,17 @@ end)
 AutoSettings:DropDown("Area| Axolotl", AxolotlTable, function(FarmArea)
     FarmingArea = FarmArea
 end)
-PetToggle:Toggle("Start Toggle", function(State)
+
+UpgradePet:Toggle("Start Toggle", function(State)
 	StartCombine = State
 end)
-PetToggle:Toggle("Auto Golden",function(State)
+UpgradePet:Toggle("Auto Golden",function(State)
 	Golden = State
 end)
-PetToggle:Toggle("Auto Rainbow", function(State)
+UpgradePet:Toggle("Auto Rainbow", function(State)
 	Rainbow = State
 end)
-PetSetting:DropDown("Required",{ 1, 2, 3, 4, 5, 6 }, function(Requires)
+UpgradePet:DropDown("Required",{ 1, 2, 3, 4, 5, 6 }, function(Requires)
 	Required = Requires
 end)
 
@@ -725,11 +726,24 @@ spawn(function()
 	end
 end)
 
-PetToggle:Toggle("Open Eggs",function(State)
+HatchEgg:Toggle("Open Eggs",function(State)
 	OpenEggs = State
 end)
-PetToggle:Toggle("Triple Eggs", function(State)
+HatchEgg:Toggle("Triple Eggs", function(State)
 	TripleEggs = State
+end)
+HatchEgg:Toggle("Auto Open/Close Inventory", function(Vals)
+    InventoryOpenClose = Vals
+end)
+spawn(function()
+    while true do wait(0.2)
+        if InventoryOpenClose then
+            game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Enabled = true
+            wait(2)
+            game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Enabled = false
+            wait(30)
+        end
+    end
 end)
 spawn(function()
 	while true do wait()
@@ -742,19 +756,20 @@ spawn(function()
 		end
 	end
 end)
-PetSetting:DropDown('Axolotl Eggs', DataAxolotl, function(EggsTable)
+
+HatchEgg:DropDown('Axolotl Eggs', DataAxolotl, function(EggsTable)
     SelectedEgg = EggsTable
 end)
-PetSetting:DropDown('Tech Eggs', DataTech, function(EggsTable)
+HatchEgg:DropDown('Tech Eggs', DataTech, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
-PetSetting:DropDown('Fantasy Eggs', DataFantasy, function(EggsTable)
+HatchEgg:DropDown('Fantasy Eggs', DataFantasy, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
-PetSetting:DropDown('Coins Eggs', DataCoins, function(EggsTable)
+HatchEgg:DropDown('Coins Eggs', DataCoins, function(EggsTable)
 	SelectedEgg = EggsTable
 end)
-PetSetting:Button("Remove Animation", function()
+HatchEgg:Button("Remove Animation", function()
 	for i,v in pairs(getgc(true)) do
 		if (typeof(v) == 'table' and rawget(v, 'OpenEgg')) then
 			v.OpenEgg = function()
