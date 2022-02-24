@@ -71,6 +71,8 @@ workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "change pet target")
 workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem rank rewards")
 workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem vip rewards")
 workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "activate boost")
+workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "convert to dark matter")
+workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem dark matter pet")
 
 --Farms a coin. It seems to work. That's fun
 function FarmCoin(CoinID, PetID)
@@ -156,7 +158,23 @@ function AllChests()
     end
     return returntable
 end
+local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
+local IDToName = {}
+local NameToID = {}
+local PettoRarity = {}
+local RarityTable = {}
+local PetNamesTable = {}
+local PetNamesTable = {}
 
+for i,v in pairs(GameLibrary.Directory.Pets) do
+    IDToName[i] = v.name
+    NameToID[v.name] = i
+    PettoRarity[i] = v.rarity
+    if not table.find(RarityTable, v.rarity) then
+        table.insert(RarityTable, v.rarity)
+    end
+    table.insert(PetNamesTable, v.name)
+end
 --[[
 --the remote works like this. I'm too scared to test anything else out
 function CollectOrbs()
@@ -260,7 +278,9 @@ local AutoSettings = Mains:Section("Autofarm Settings")
 local Pets = Luxt:Tab("Pet", 6087485864)
 local HatchEgg = Pets:Section("Pet Hatcher")
 local UpgradePet = Pets:Section("Rainbow & Golden")
-local Enchant = Pets:Section("Pet Enchants")
+local DarkMatter = Pets:Section("Dark Matter")
+local Enchant = Pets:Section("Enchants")
+local AutoFuse = Pets:Section("Auto Fuse")
 ------Menu Stuff-----
 local Menus = Luxt:Tab("Menus", 6087485864)
 local MenuStuff = Menus:Section("All Menu Uis")
@@ -615,6 +635,120 @@ UpgradePet:DropDown("Required",{ 1, 2, 3, 4, 5, 6 }, function(Requires)
 	Required = Requires
 end)
 
+-----------------------------------------------------------------------------
+---------------------------------------------------------------------------
+----------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------------------------
+--Dark Matter
+DarkMatter:Button("Time Check", function()
+    local PetList = {}
+    for i,v in pairs(GameLibrary.Directory.Pets) do
+    PetList[i] = v.name
+    end
+
+    local returnstring = ""
+    for i,v in pairs(GameLibrary.Save.Get().DarkMatterQueue) do
+        local timeleft = 'Ready.'
+        if math.floor(v.readyTime - os.time()) > 0 then
+            timeleft = SecondsToClock(math.floor(v.readyTime - os.time()))
+        end
+        local stringthing = PetList[v.petId] .." going to be ready in: ".. timeleft
+        returnstring = returnstring .. stringthing .. "\n"
+    end
+    require(game:GetService("ReplicatedStorage").Framework.Modules.Client["5 | Message"]).New(returnstring)
+end)
+
+
+-------------------------------
+
+DarkMatter:DropDown("Select pet to dark matter", PetNamesTable, function(value)
+
+if value then
+_G.NameOfPet = value
+end
+print("dark matter enabled", value)
+end)
+
+-------------------------------
+
+DarkMatter:Label("Auto Dark Matter Button Wont Toggle, I'll Fix Later")
+DarkMatter:Label("For Now Just Watch Your Damn Gems")
+DarkMatter:Toggle("Auto DarkMatter", function(automakedarkmatters)
+
+if automakedarkmatters == true then
+_G.AutoMakeDarkMatter = true
+elseif automakedarkmatters == false then
+_G.AutoMakeDarkMatter = false
+end
+
+
+while task.wait() and _G.AutoMakeDarkMatter do
+    local Save = GameLibrary.Save.Get()
+    local Slots = Save.DarkMatterSlots
+    local Queued = 0
+    for a, b in pairs(Save.DarkMatterQueue) do
+        Queued = Queued + 1 
+    end
+    local Slots = Slots - Queued
+    for count = 1, Slots do
+        if Slots - count >= 0 then
+            local PetList = {}
+            for i,v in pairs(GameLibrary.Save.Get().Pets) do
+                if #PetList < _G.CountDarkMatterFunc1 and v.r and IDToName[v.id] == _G.NameOfPet then
+                    table.insert(PetList, v.uid)
+                end
+            end
+            if #PetList >= _G.CountDarkMatterFunc1 then
+                local tablething = {[1] = {}}
+                for eeek = 1, _G.CountDarkMatterFunc1 do
+                    tablething[1][eeek] = PetList[eeek]
+                end
+                workspace.__THINGS.__REMOTES["convert to dark matter"]:InvokeServer(tablething)
+            end
+        end 
+    end
+    task.wait(15)
+end
+end)
+-------------------------------
+DarkMatter:Toggle("Auto Claim Pets", function(autoclaimdark)
+
+    if autoclaimdark == true then
+    _G.AutoClaimDarkMatter = true
+    elseif autoclaimdark == false then
+    _G.AutoClaimDarkMatter = false
+    end
+    
+    spawn(function()
+    while task.wait() and _G.AutoClaimDarkMatter do
+        for i,v in pairs(GameLibrary.Save.Get().DarkMatterQueue) do
+            if math.floor(v.readyTime - os.time()) < 0 then
+                workspace.__THINGS.__REMOTES["redeem dark matter pet"]:InvokeServer({[1] = i})
+            end
+            end
+        task.wait(15)
+    end
+    end)
+    end)
+    
+DarkMatter:DropDown("Required",{1,2,3,4,5,6}, function(countdarkmatterfunc)
+    if countdarkmatterfunc then
+        _G.CountDarkMatterFunc1 = countdarkmatterfunc
+    end
+    --print("Selected Dark Matter Count: ", _G.CountDarkMatterFunc1)
+    end)
+    
+    
+    -------------------------------
+
+-------------------------------------------------------------------------------------------------
+--page3
+
+
+
 local MyEggData = {}
 local littleuselesstable = {}
 local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
@@ -820,6 +954,15 @@ Enchant:Button("STOP ENCHANT", function()
     _G.Stop = true
 end)
 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 FunWindow:Button("Visual Dupe Gems", function()
 	function comma_value(amount)
