@@ -41,7 +41,6 @@ local CurrencyOrder = {"Rainbow Coins","Tech Coins", "Fantasy Coins", "Coins",}
     }
     
     local AreaFantasy = {
-        'Town'; 'Forest'; 'Beach'; 'Mine'; 'Winter'; 'Glacier'; 'Desert'; 'Volcano';
         'Enchanted Forest'; 'Ancient'; 'Samurai'; 'Candy'; 'Haunted'; 'Hell'; 'Heaven';
     }
     local AreaTech = {
@@ -1141,4 +1140,3 @@ end)
        end
     end
     end)
-
