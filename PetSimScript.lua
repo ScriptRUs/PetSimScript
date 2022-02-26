@@ -278,7 +278,7 @@ local Pets = Luxt:Tab("Pet", 6087485864)
 local HatchEgg = Pets:Section("Pet Hatcher")
 local UpgradePet = Pets:Section("Rainbow & Golden")
 local DarkMatter = Pets:Section("Dark Matter")
-local Enchant = Pets:Section("Enchants")
+local Enchant = Pets:Section("Enchants - DO NOT USE RN")
 local AutoFuse = Pets:Section("Auto Fuse")
 ------Menu Stuff-----
 local Menus = Luxt:Tab("Menus", 6087485864)
