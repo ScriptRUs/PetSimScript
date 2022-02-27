@@ -376,17 +376,19 @@ SpoofPlayer:Button('Un-Spoof', function()
     game:GetService("ReplicatedStorage").Framework.Modules["2 | Network"]["new stats"]:Fire(psxLib.Network.Invoke('Get Stats', game.Players.LocalPlayer), game.Players.LocalPlayer)
 end)
 
-local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
+
 spawn(function()
     while true do wait(0)
         if merchantBuy1 then
-            if (isMerchantHere) then
+	        local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
+            if (isMerchantHere) and not shared.Mutex then
+       		shared.Mutex = true;
                 local ohTable1 = {
                     [1] = 1
                 }
                 workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
-            else
-            wait()
+            elseif (not isMerchantHere and shared.Mutex) then
+        	shared.Mutex = false; 
             end
         end
     end
@@ -394,12 +396,15 @@ end)
 spawn(function()
     while true do wait(0)
         if merchantBuy2 then
-            if (isMerchantHere) then
+	        local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
+            if (isMerchantHere) and not shared.Mutex then
+       		shared.Mutex = true;
                 local ohTable1 = {
                         [1] = 2
                     }
                 workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
-            else
+            elseif (not isMerchantHere and shared.Mutex) then
+                shared.Mutex = false; 
             wait()
             end
         end
@@ -408,13 +413,15 @@ end)
 spawn(function()
     while true do wait(0)
         if merchantBuy3 then
-            if (isMerchantHere) then
+	local isMerchantHere = game:GetService("Workspace")["__THINGS"]["__REMOTES"]["is merchant here"]:InvokeServer({})[1];
+            if (isMerchantHere) and not shared.Mutex then
+       		shared.Mutex = true;
                 local ohTable1 = {
                     [1] = 3
                 }
                 workspace.__THINGS.__REMOTES["buy merchant item"]:InvokeServer(ohTable1)
-            else
-            wait()
+            elseif (not isMerchantHere and shared.Mutex) then
+        	shared.Mutex = false; 
             end
         end
     end
